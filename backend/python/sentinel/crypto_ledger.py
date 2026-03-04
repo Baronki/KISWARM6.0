@@ -339,3 +339,85 @@ class CryptographicKnowledgeLedger:
             "root_short": self._root[:16] + "…",
             "timestamp":  datetime.now().isoformat(),
         }
+
+
+# ── Simple Ledger for KIBank ───────────────────────────────────────────────────
+
+class CryptoLedger:
+    """
+    Simple cryptographic ledger for KIBank modules.
+    
+    Provides a simple record() interface for logging KIBank transactions
+    without requiring SwarmKnowledge objects.
+    """
+    
+    def __init__(self, ledger_path: str = None):
+        """Initialize the simple ledger."""
+        if ledger_path is None:
+            ledger_path = os.path.join(KISWARM_DIR, "kibank_ledger.json")
+        self._ledger_path = ledger_path
+        self._entries: list[dict] = []
+        self._load()
+    
+    def _load(self):
+        """Load existing entries from disk."""
+        if os.path.exists(self._ledger_path):
+            try:
+                with open(self._ledger_path) as f:
+                    data = json.load(f)
+                self._entries = data.get("entries", [])
+                logger.info("CryptoLedger loaded: %d entries", len(self._entries))
+            except (json.JSONDecodeError, OSError) as exc:
+                logger.warning("CryptoLedger load failed: %s", exc)
+                self._entries = []
+    
+    def _save(self):
+        """Persist entries to disk."""
+        try:
+            os.makedirs(os.path.dirname(self._ledger_path), exist_ok=True)
+            with open(self._ledger_path, "w") as f:
+                json.dump({"entries": self._entries}, f, indent=2)
+        except OSError as exc:
+            logger.error("CryptoLedger save failed: %s", exc)
+    
+    def record(self, entry: dict) -> str:
+        """
+        Record an entry in the ledger.
+        
+        Args:
+            entry: Dictionary with entry data
+            
+        Returns:
+            Hash ID of the recorded entry
+        """
+        # Create hash of entry
+        entry_str = json.dumps(entry, sort_keys=True, default=str)
+        hash_id = _sha256(entry_str)[:16]
+        
+        # Add metadata
+        entry_record = {
+            "hash_id": hash_id,
+            "timestamp": datetime.now().isoformat(),
+            "data": entry
+        }
+        
+        self._entries.append(entry_record)
+        self._save()
+        
+        logger.info("CryptoLedger record: hash=%s", hash_id)
+        return hash_id
+    
+    def get_entries(self, limit: int = 100) -> list[dict]:
+        """Get recent entries."""
+        return self._entries[-limit:]
+    
+    def get_entry(self, hash_id: str) -> Optional[dict]:
+        """Get entry by hash ID."""
+        for entry in self._entries:
+            if entry.get("hash_id") == hash_id:
+                return entry
+        return None
+    
+    @property
+    def size(self) -> int:
+        return len(self._entries)

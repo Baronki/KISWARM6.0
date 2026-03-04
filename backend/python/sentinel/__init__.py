@@ -39,6 +39,7 @@ from .model_tracker import ModelPerformanceTracker, ModelRecord, LeaderboardEntr
 # ── v2.2: Module 4 — Cryptographic Knowledge Ledger ──────────────────────────
 from .crypto_ledger import (
     CryptographicKnowledgeLedger, LedgerEntry, TamperReport, merkle_root,
+    CryptoLedger,
 )
 
 # ── v2.2: Module 5 — Differential Retrieval Guard ────────────────────────────

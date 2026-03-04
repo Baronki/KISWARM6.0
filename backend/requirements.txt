@@ -3,7 +3,7 @@
 
 # ==================== Core AI / Memory ====================
 ollama>=0.1.7
-mem0>=0.1.0
+# mem0>=0.1.0  # Optional - not available in PyPI
 qdrant-client>=1.7.0
 
 # ==================== Vector / ML ====================

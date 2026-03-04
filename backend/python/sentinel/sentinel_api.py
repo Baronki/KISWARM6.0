@@ -4614,6 +4614,14 @@ def solar_position_calc():
 
 
 
+def create_app():
+    """
+    Factory function to create the Flask app.
+    Used by KISWARM6.0 for integration.
+    """
+    return app
+
+
 if __name__ == "__main__":
     logger.info("╔══════════════════════════════════════════════════════════════╗")
     logger.info("║  KISWARM v5.1 — Planetary Machine · 57 Modules · 360 Epts  ║")
