@@ -1,275 +1,366 @@
-# KISWARM v6.0 Architecture
+# KISWARM6.0 Architektur-Dokumentation
 
-## Overview
+## Systemübersicht
 
-KISWARM v6.0 is an integration platform combining:
-- **KISWARM5.0 Backend** - 57 Python modules for AI swarm intelligence
-- **kinfp-portal Frontend** - React/TypeScript banking portal
-- **KIBank Modules** - New banking, investment, and reputation modules
+KISWARM6.0 ist eine **4-Schichtige Unified Architecture**, die die bewährte KISWARM5.0 Planetary Machine mit dem neuen KIBank-Finanzprotokoll vereint.
 
-## System Architecture
+### Die 4 Ebenen
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                            KISWARM v6.0                                     │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                        FRONTEND LAYER                                │   │
-│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────┐ │   │
-│  │  │   React 18      │  │   TypeScript    │  │   Tailwind CSS      │ │   │
-│  │  │   Components    │  │   Type Safety   │  │   shadcn/ui         │ │   │
-│  │  └────────┬────────┘  └────────┬────────┘  └──────────┬──────────┘ │   │
-│  │           │                    │                      │            │   │
-│  │           └────────────────────┼──────────────────────┘            │   │
-│  │                                │                                   │   │
-│  │                     ┌──────────▼──────────┐                        │   │
-│  │                     │   tRPC Client       │                        │   │
-│  │                     │   Type-safe API     │                        │   │
-│  │                     └──────────┬──────────┘                        │   │
-│  └────────────────────────────────┼────────────────────────────────────┘   │
-│                                   │                                        │
-│  ┌────────────────────────────────▼────────────────────────────────────┐   │
-│  │                        BRIDGE LAYER                                  │   │
-│  │  ┌──────────────────────────────────────────────────────────────┐   │   │
-│  │  │   tRPC-Flask Bridge (TypeScript)                              │   │   │
-│  │  │   - Type-safe procedure calls                                 │   │   │
-│  │  │   - Request/response transformation                           │   │   │
-│  │  │   - Authentication forwarding                                 │   │   │
-│  │  └──────────────────────────────────────────────────────────────┘   │   │
-│  └────────────────────────────────┬────────────────────────────────────┘   │
-│                                   │                                        │
-│  ┌────────────────────────────────▼────────────────────────────────────┐   │
-│  │                        BACKEND LAYER                                 │   │
-│  │                                                                      │   │
-│  │  ┌─────────────────────────────────────────────────────────────┐    │   │
-│  │  │   Flask API Server (Port 11436)                              │    │   │
-│  │  │   - REST endpoints                                           │    │   │
-│  │  │   - CORS enabled                                             │    │   │
-│  │  │   - JSON request/response                                    │    │   │
-│  │  └─────────────────────────────────────────────────────────────┘    │   │
-│  │                                                                      │   │
-│  │  ┌──────────────────────┐  ┌──────────────────────────────────────┐ │   │
-│  │  │   KISWARM5.0         │  │   KIBank (NEW)                       │ │   │
-│  │  │   ─────────────      │  │   ─────────────                      │ │   │
-│  │  │   57 Modules         │  │   M60: Authentication                │ │   │
-│  │  │   360+ Endpoints     │  │   M61: Banking Operations            │ │   │
-│  │  │   - Sentinel Bridge  │  │   M62: Investment & Reputation       │ │   │
-│  │  │   - HexStrike Guard  │  │   24 New Endpoints                   │ │   │
-│  │  │   - Byzantine Agg.   │  │                                      │ │   │
-│  │  │   - Crypto Ledger    │  │                                      │ │   │
-│  │  │   - ... all others   │  │                                      │ │   │
-│  │  └──────────────────────┘  └──────────────────────────────────────┘ │   │
-│  │                                                                      │   │
-│  └──────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
+│                           FRONTEND LAYER                                     │
+│                                                                              │
+│    ┌─────────────────────────────────────────────────────────────────┐     │
+│    │                    React 18 Application                          │     │
+│    │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │     │
+│    │  │   Pages     │  │ Components  │  │  Contexts   │              │     │
+│    │  │ (15+ Pages) │  │ (shadcn/ui) │  │ (Auth, KIWZB)│             │     │
+│    │  └─────────────┘  └─────────────┘  └─────────────┘              │     │
+│    │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │     │
+│    │  │    Hooks    │  │    Utils    │  │   Services  │              │     │
+│    │  │(useAuth,etc)│  │  (helpers)  │  │ (WebSocket) │              │     │
+│    │  └─────────────┘  └─────────────┘  └─────────────┘              │     │
+│    └─────────────────────────────────────────────────────────────────┘     │
+│                                                                              │
+│    Technologien: Vite, TypeScript, Tailwind CSS, tRPC Client               │
 └─────────────────────────────────────────────────────────────────────────────┘
-```
-
-## Module Architecture
-
-### KISWARM5.0 Modules (UNCHANGED)
-
-| Version | Modules | Key Features |
-|---------|---------|--------------|
-| v5.1 | 34-38 | Solar Chase, Planetary Machine |
-| v5.0 | 31-33 | HexStrike Guard, ToolForge, KiInstall |
-| v4.3 | 29-30 | ICS Cybersecurity, OT Network Monitor |
-| v4.2 | 24-28 | XAI, Predictive Maintenance, SIL |
-| v4.1 | 17-23 | TD3 Controller, Formal Verification, Governance |
-| v4.0 | 11-16 | CIEC Core (PLC, SCADA, Twin, Rules) |
-| v3.0 | 7-10 | Fuzzy Tuner, Constrained RL, Digital Twin, Mesh |
-| v2.2 | 1-6 | Intelligence Modules (Conflict, Decay, Ledger, etc.) |
-
-### KIBank Modules (NEW)
-
-#### M60: Authentication Module
-- OAuth 2.0 Authorization Code Flow
-- KI-Entity Cryptographic Identity
-- Session Management with Permissions
-- Token Refresh Mechanism
-
-#### M61: Banking Operations Module
-- Multi-currency Account Management
-- Internal Transfers (instant settlement)
-- SEPA Credit Transfers
-- Transaction Validation & History
-
-#### M62: Investment & Reputation Module
-- Investment Portfolio Management
-- Reputation Scoring (0-1000 scale)
-- Trading Limits based on Reputation
-- KI-Proof Verification Integration
-
-## Security Architecture
-
-### Transaction Security Flow
-
-```
+                                    │
+                                    │ tRPC HTTP/WebSocket
+                                    ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      TRANSACTION SECURITY PIPELINE                          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  1. AUTHENTICATION (M60)                                                    │
-│     ├─ OAuth / KI-Entity verification                                      │
-│     ├─ Session validation                                                  │
-│     └─ Permission check                                                    │
-│                                                                             │
-│  2. SECURITY SCAN (M31 - HexStrike Guard)                                  │
-│     ├─ Fraud detection                                                     │
-│     ├─ Pattern analysis                                                    │
-│     └─ Threat assessment                                                   │
-│                                                                             │
-│  3. BYZANTINE VALIDATION (M22)                                             │
-│     ├─ N≥3f+1 consensus                                                    │
-│     ├─ Gradient aggregation                                                │
-│     └─ Anomaly detection                                                   │
-│                                                                             │
-│  4. CRYPTOGRAPHIC LEDGER (M4)                                              │
-│     ├─ SHA-256 signing                                                     │
-│     ├─ Merkle tree update                                                  │
-│     └─ Audit trail                                                         │
-│                                                                             │
-│  5. REPUTATION UPDATE (M62)                                                │
-│     ├─ Score calculation                                                   │
-│     ├─ Tier update                                                         │
-│     └─ Trading limit adjustment                                            │
-│                                                                             │
+│                             API LAYER                                        │
+│                                                                              │
+│    ┌────────────────────────────┐    ┌────────────────────────────┐        │
+│    │      Flask Backend         │    │      tRPC Bridge           │        │
+│    │    (Port 5001)             │    │    (Port 3000)             │        │
+│    │                            │    │                            │        │
+│    │  • Sentinel API            │◄───┤  • Type-Safe Procedures    │        │
+│    │  • KIBank Endpoints        │    │  • React Query Integration │        │
+│    │  • Security Flow           │    │  • Real-time Updates       │        │
+│    │  • 384+ Endpoints          │    │  • Superjson Transformer   │        │
+│    └────────────────────────────┘    └────────────────────────────┘        │
+│                                                                              │
+│    Technologien: Flask, Flask-CORS, tRPC, Superjson, Zod                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ Internal Calls
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        BUSINESS LOGIC LAYER                                  │
+│                                                                              │
+│    ┌─────────────────────────────────┐  ┌─────────────────────────────────┐ │
+│    │      KISWARM5.0 Modules         │  │       KIBank Modules            │ │
+│    │         (57 Module)             │  │         (3 Module)              │ │
+│    │                                 │  │                                 │ │
+│    │  M1-M10: Foundation             │  │  M60: Authentication            │ │
+│    │  M11-M30: Industrial Core       │  │       • OAuth Integration       │ │
+│    │  M31-M33: HexStrike Guard       │  │       • KI-Entity Auth          │ │
+│    │  M34-M38: Solar Chase           │  │       • Session Management      │ │
+│    │  M39-M57: Advanced Modules      │  │                                 │ │
+│    │                                 │  │  M61: Banking Operations        │ │
+│    │  Wichtige Module:               │  │       • Account Management      │ │
+│    │  • M4: Crypto Ledger            │  │       • SEPA Transfers          │ │
+│    │  • M22: Byzantine Aggregator    │  │       • IBAN/BIC Integration    │ │
+│    │  • M31: HexStrike Guard         │  │                                 │ │
+│    │  • M34-M38: Solar Chase         │  │  M62: Investment & Reputation   │ │
+│    │                                 │  │       • Portfolio Management    │ │
+│    │                                 │  │       • Reputation Scoring      │ │
+│    │                                 │  │       • Trading Limits          │ │
+│    └─────────────────────────────────┘  └─────────────────────────────────┘ │
+│                                                                              │
+│    Technologien: Python 3.10+, Ollama, Mem0, Sentence Transformers          │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ Data Access
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           DATA LAYER                                         │
+│                                                                              │
+│    ┌───────────────┐  ┌───────────────┐  ┌───────────────┐                  │
+│    │    Qdrant     │  │   MySQL/TiDB  │  │   S3 Storage  │                  │
+│    │  (Vector DB)  │  │ (Relational)  │  │   (Files)     │                  │
+│    │               │  │               │  │               │                  │
+│    │ • Embeddings  │  │ • Accounts    │  │ • Documents   │                  │
+│    │ • Knowledge   │  │ • Transaktion.│  │ • Backups     │                  │
+│    │ • Memory      │  │ • Users       │  │ • Logs        │                  │
+│    └───────────────┘  └───────────────┘  └───────────────┘                  │
+│                                                                              │
+│    Technologien: Qdrant Client, Drizzle ORM, S3 API                         │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Data Flow
+## Modul-Integration
 
-### Request Flow (Frontend → Backend)
+### Security Flow
 
-```
-User Action
-    │
-    ▼
-React Component
-    │
-    ▼
-tRPC Procedure Call
-    │
-    ▼
-tRPC-Flask Bridge
-    │
-    ▼
-Flask API Endpoint
-    │
-    ├─► KIBank Module (M60/M61/M62)
-    │       │
-    │       ├─► Validation
-    │       ├─► Business Logic
-    │       ├─► Security Integration
-    │       └─► Response
-    │
-    └─► Sentinel Module (M1-M38)
-            │
-            └─► Response
-```
-
-### Response Flow (Backend → Frontend)
+Jede Transaktion durchläuft einen 5-stufigen Sicherheitsprozess:
 
 ```
-Module Response
-    │
-    ▼
-Flask JSON Response
-    │
-    ▼
-tRPC Bridge Transformation
-    │
-    ▼
-TypeScript Type Inference
-    │
-    ▼
-React State Update
-    │
-    ▼
-UI Render
+┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+│  M60     │    │  M31     │    │  M22     │    │ Execute  │    │  M62     │
+│  AUTH    │───►│ SECURITY │───►│ VALIDATE │───►│          │───►│ REPUTAT. │
+└──────────┘    └──────────┘    └──────────┘    └──────────┘    └──────────┘
+     │               │               │               │               │
+     ▼               ▼               ▼               ▼               ▼
+  OAuth/KI       HexStrike       Byzantine      Transaction     Score
+  Entity         12 AI Agents    N≥3f+1         Processing      Update
+  Verify         150+ Tools      Consensus                      +5/-10
+
+                                                    │
+                                                    ▼
+                                              ┌──────────┐
+                                              │   M4     │
+                                              │  LEDGER  │
+                                              │ SHA-256  │
+                                              │ Merkle   │
+                                              └──────────┘
 ```
 
-## Technology Stack
+### Modul-Abhängigkeiten
 
-### Frontend
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| React | 18 | UI Framework |
-| TypeScript | 5 | Type Safety |
-| Vite | 7 | Build Tool |
-| tRPC | 11 | API Layer |
-| TanStack Query | 5 | Data Fetching |
-| Tailwind CSS | 4 | Styling |
-| shadcn/ui | latest | UI Components |
+```python
+# KIBank Module Dependencies
+M60 (Authentication)
+    └── M4 (Crypto Ledger) - für Signaturen
 
-### Backend
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Python | 3.10+ | Runtime |
-| Flask | 3.0 | Web Framework |
-| Ollama | latest | LLM Runtime |
-| Qdrant | 1.7+ | Vector DB |
-| sentence-transformers | 2.7+ | Embeddings |
+M61 (Banking)
+    ├── M60 (Auth) - für Entity-Verifizierung
+    ├── M31 (HexStrike) - für Security Scans
+    ├── M22 (Byzantine) - für Validation
+    └── M4 (Ledger) - für Transaktions-Logging
 
-### Bridge
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| TypeScript | 5 | Type Safety |
-| tRPC Server | 11 | API Server |
-| Express | 4 | HTTP Server |
-| Axios | 1 | HTTP Client |
+M62 (Investment)
+    ├── M60 (Auth) - für Reputation-Sync
+    └── M61 (Banking) - für Investment-Transfers
+```
 
-## Deployment Architecture
+## Datenfluss
+
+### Transaktions-Flow
+
+```
+1. Client Request
+   └── React Frontend initiiert Transaktion
+
+2. tRPC Bridge
+   └── Type-Safe Serialisierung mit Superjson
+
+3. Flask API
+   └── Routing zum entsprechenden Modul
+
+4. Security Pipeline
+   ├── M60: Authentifizierung
+   ├── M31: HexStrike Security Scan
+   ├── M22: Byzantine Validation
+   └── Entscheidung: Erlaubt/Blockiert
+
+5. Transaktion Ausführen
+   └── M61: Banking Operations
+
+6. Ledger Eintrag
+   └── M4: Cryptographic Ledger (SHA-256 + Merkle)
+
+7. Reputation Update
+   └── M62: Score aktualisieren
+
+8. Response
+   └── Rückweg durch alle Schichten zum Client
+```
+
+### Real-time Updates
+
+```
+┌─────────────┐         ┌─────────────┐         ┌─────────────┐
+│   Client    │◄───────►│   WebSocket │◄───────►│   Backend   │
+│  (Browser)  │  WS     │   Server    │  Pub/Sub │  (Flask)   │
+└─────────────┘         └─────────────┘         └─────────────┘
+                              │
+                              │ Events
+                              ▼
+                    ┌─────────────────────┐
+                    │  Event Types:       │
+                    │  • transaction      │
+                    │  • investment       │
+                    │  • reputation       │
+                    │  • security_alert   │
+                    │  • system_status    │
+                    └─────────────────────┘
+```
+
+## Deployment-Architektur
 
 ### Development
+
 ```
-Frontend (Vite dev server)  →  Port 3000
-    │
-    └──► Bridge (tsx watch)  →  Port 3001
-              │
-              └──► Backend (Flask)  →  Port 11436
+┌─────────────────────────────────────────────────────────────┐
+│                    Development Machine                       │
+│                                                              │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │   Frontend  │  │   Bridge    │  │   Backend   │         │
+│  │  Vite:5173  │  │  tRPC:3000  │  │ Flask:5001  │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+│         │                │                │                  │
+│         └────────────────┴────────────────┘                  │
+│                          │                                   │
+│                          ▼                                   │
+│  ┌─────────────┐  ┌─────────────┐                          │
+│  │   Qdrant    │  │   MySQL     │                          │
+│  │   :6333     │  │   :3306     │                          │
+│  └─────────────┘  └─────────────┘                          │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ### Production
+
 ```
-Frontend (static files)  →  CDN / S3
-    │
-    └──► Bridge (Node.js)  →  Port 3000
-              │
-              └──► Backend (Gunicorn)  →  Port 11436
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          Production Cluster                              │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                        Load Balancer (Nginx)                     │   │
+│  │                         SSL Termination                          │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                    │                                     │
+│         ┌──────────────────────────┼──────────────────────────┐        │
+│         │                          │                          │        │
+│         ▼                          ▼                          ▼        │
+│  ┌─────────────┐           ┌─────────────┐           ┌─────────────┐  │
+│  │  Frontend   │           │  Frontend   │           │  Frontend   │  │
+│  │  Instance 1 │           │  Instance 2 │           │  Instance N │  │
+│  └─────────────┘           └─────────────┘           └─────────────┘  │
+│         │                          │                          │        │
+│         └──────────────────────────┼──────────────────────────┘        │
+│                                    │                                     │
+│                                    ▼                                     │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                    API Gateway (tRPC Bridge)                     │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                    │                                     │
+│         ┌──────────────────────────┼──────────────────────────┐        │
+│         │                          │                          │        │
+│         ▼                          ▼                          ▼        │
+│  ┌─────────────┐           ┌─────────────┐           ┌─────────────┐  │
+│  │   Backend   │           │   Backend   │           │   Backend   │  │
+│  │  Gunicorn 1 │           │  Gunicorn 2 │           │  Gunicorn N │  │
+│  └─────────────┘           └─────────────┘           └─────────────┘  │
+│         │                          │                          │        │
+│         └──────────────────────────┼──────────────────────────┘        │
+│                                    │                                     │
+│         ┌──────────────────────────┼──────────────────────────┐        │
+│         │                          │                          │        │
+│         ▼                          ▼                          ▼        │
+│  ┌─────────────┐           ┌─────────────┐           ┌─────────────┐  │
+│  │   MySQL     │           │   Qdrant    │           │   Redis     │  │
+│  │  Primary    │           │  Cluster    │           │   Cache     │  │
+│  └─────────────┘           └─────────────┘           └─────────────┘  │
+│         │                                                                │
+│         ▼                                                                │
+│  ┌─────────────┐                                                        │
+│  │   MySQL     │                                                        │
+│  │  Replicas   │                                                        │
+│  └─────────────┘                                                        │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Scalability
+## Technologie-Stack
 
-### Horizontal Scaling
-- Frontend: Static files served from CDN
-- Bridge: Multiple instances behind load balancer
-- Backend: Multiple Flask workers with Gunicorn
+### Frontend
 
-### Vertical Scaling
-- Backend: Increase Python worker processes
-- Bridge: Increase Node.js memory/threads
-- Database: Scale Qdrant cluster
+| Technologie | Version | Zweck |
+|-------------|---------|-------|
+| React | 18.x | UI Framework |
+| TypeScript | 5.x | Type Safety |
+| Vite | 5.x | Build Tool |
+| Tailwind CSS | 4.x | Styling |
+| shadcn/ui | Latest | Component Library |
+| tRPC | 11.x | API Client |
+| React Query | 5.x | Server State |
+| Recharts | 2.x | Charts |
 
-## Security Considerations
+### Backend
 
-1. **Authentication**
-   - All requests require valid session token
-   - Token expiration and refresh mechanism
-   - Permission-based access control
+| Technologie | Version | Zweck |
+|-------------|---------|-------|
+| Python | 3.10+ | Runtime |
+| Flask | 3.0+ | Web Framework |
+| Qdrant Client | 1.7+ | Vector DB |
+| Drizzle ORM | Latest | Database ORM |
+| PyJWT | 2.8+ | JWT Handling |
+| Cryptography | 41.0+ | Crypto Operations |
+| Gunicorn | 21.0+ | WSGI Server |
 
-2. **Transport Security**
-   - HTTPS required in production
-   - CORS configured for allowed origins
-   - Rate limiting on public endpoints
+### Infrastructure
 
-3. **Data Security**
-   - No raw data leaves the system
-   - Cryptographic audit trail
-   - Merkle tree integrity verification
+| Technologie | Zweck |
+|-------------|-------|
+| Docker | Containerization |
+| Docker Compose | Local Orchestration |
+| Nginx | Reverse Proxy |
+| MySQL/TiDB | Relational Database |
+| Qdrant | Vector Database |
+| S3 | Object Storage |
 
-4. **Compliance**
-   - SEPA payment regulations
-   - Data privacy (GDPR compatible)
-   - Financial services standards
+## Skalierbarkeit
+
+### Horizontale Skalierung
+
+```yaml
+# Kubernetes HPA Configuration
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: kiswarm-backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: kiswarm-backend
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+```
+
+### Performance Targets
+
+| Metrik | Ziel |
+|--------|------|
+| API Response (p95) | < 200ms |
+| Database Query (p95) | < 100ms |
+| Concurrent Users | > 1,000 |
+| Transactions/Hour | > 10,000 |
+| Uptime | 99.9% |
+
+## Sicherheit
+
+### Authentifizierung
+
+- **OAuth 2.0** für Human Operators
+- **KI-Entity Auth** mit Public/Private Key
+- **JWT Tokens** mit 24h Ablauf
+- **Refresh Tokens** mit 30d Ablauf
+
+### Verschlüsselung
+
+- **TLS 1.3** für alle Verbindungen
+- **AES-256-GCM** für Datenverschlüsselung
+- **SHA-256** für Hashing
+- **Merkle Trees** für Transaktions-Integrität
+
+### Audit
+
+- Alle Transaktionen im Ledger (M4)
+- Security Scans (M31) protokolliert
+- Byzantine Validation (M22) Ergebnisse
+- Reputation Changes (M62) Historie
