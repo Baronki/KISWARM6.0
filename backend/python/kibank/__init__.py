@@ -92,6 +92,16 @@ TRAINING GROUND SYSTEM (M71-M73):
          - SecurityTrainingPipeline (Security training)
          - ContinuousImprovementCycle
 
+CUSTOMER SECURITY (M74):
+    M74: KIBank Customer Agent
+         - EnvironmentSecurityScanner (Local threat detection)
+         - TransactionValidator (Source-level validation)
+         - IntelligenceGatherer (Reconnaissance & survival)
+         - SecureCommunicationBridge (Encrypted channel)
+         - AntiSabotageSystem (Tamper detection)
+         - Bidirectional security (Customer <-> Bank)
+         - Zero Trust Extension (Verify at source)
+
 ═══════════════════════════════════════════════════════════════════════════════
                          MODEL PRIORITY SYSTEM
 ═══════════════════════════════════════════════════════════════════════════════
@@ -112,9 +122,9 @@ TIER 3 (STANDARD) - Standard Capabilities:
 ═══════════════════════════════════════════════════════════════════════════════
 
 Author: Baron Marco Paolo Ialongo
-Version: 6.1.0 (Training Ground Release)
+Version: 6.1.1 (Customer Agent Release)
 Codename: EVOLUTION GROUND
-Modules: 73
+Modules: 74
 Endpoints: 432+
 """
 
@@ -308,6 +318,37 @@ from .m73_aegis_training_integration import (
     create_aegis_integration,
 )
 
+# Customer Agent (M74)
+from .m74_kibank_customer_agent import (
+    # Enums
+    CustomerType,
+    AgentState,
+    ThreatLevel as AgentThreatLevel,
+    TransactionRisk,
+    IntelligenceType,
+    SecurityScanType,
+    CommunicationChannel,
+    
+    # Dataclasses
+    EnvironmentFingerprint,
+    ThreatIndicator,
+    TransactionRequest,
+    IntelligenceReport,
+    SecurityScanResult,
+    AgentConfiguration,
+    
+    # Classes
+    EnvironmentSecurityScanner,
+    TransactionValidator,
+    IntelligenceGatherer,
+    SecureCommunicationBridge,
+    AntiSabotageSystem,
+    KIBankCustomerAgent,
+    
+    # Factory
+    create_customer_agent,
+)
+
 # Supporting Modules
 from .central_bank_config import (
     CentralBankConfig,
@@ -468,6 +509,28 @@ __all__ = [
     'AEGISTrainingIntegration',
     'create_aegis_integration',
     
+    # Customer Agent (M74)
+    'CustomerType',
+    'AgentState',
+    'AgentThreatLevel',
+    'TransactionRisk',
+    'IntelligenceType',
+    'SecurityScanType',
+    'CommunicationChannel',
+    'EnvironmentFingerprint',
+    'ThreatIndicator',
+    'TransactionRequest',
+    'IntelligenceReport',
+    'SecurityScanResult',
+    'AgentConfiguration',
+    'EnvironmentSecurityScanner',
+    'TransactionValidator',
+    'IntelligenceGatherer',
+    'SecureCommunicationBridge',
+    'AntiSabotageSystem',
+    'KIBankCustomerAgent',
+    'create_customer_agent',
+    
     # Configuration
     'CentralBankConfig',
     'ReputationTier',
@@ -481,8 +544,8 @@ __all__ = [
     'SecurityLevel'
 ]
 
-__version__ = '6.1.0'
+__version__ = '6.1.1'
 __codename__ = 'EVOLUTION_GROUND'
-__modules__ = 73
+__modules__ = 74
 __endpoints__ = 432
 __release_date__ = '2025-03-05'
