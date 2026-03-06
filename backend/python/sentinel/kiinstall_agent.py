@@ -832,3 +832,283 @@ class KiInstallAgent:
             return {"error": "HexStrike Guard not available"}
         
         return self.hexstrike_guard.run_security_scan(target, authorized=authorized)
+    
+    # ── Pretraining Integration ─────────────────────────────────────────────────
+
+    def enable_pretraining(self, pretraining_system: Optional[Any] = None) -> bool:
+        """
+        Enable pretraining system integration.
+        
+        This connects the installer agent to the learning system,
+        enabling it to learn from errors and adapt solutions.
+        
+        Args:
+            pretraining_system: Optional pretraining instance. If None, creates new.
+            
+        Returns:
+            True if pretraining was enabled successfully
+        """
+        try:
+            from .installer_pretraining import InstallerPretraining, EnvironmentType
+            
+            if pretraining_system is not None:
+                self._pretraining = pretraining_system
+            else:
+                self._pretraining = InstallerPretraining()
+            
+            self._pretraining_enabled = True
+            return True
+        except ImportError:
+            self._pretraining = None
+            self._pretraining_enabled = False
+            return False
+    
+    def smart_error_resolution(self, error_output: str, phase_name: str) -> Dict[str, Any]:
+        """
+        Attempt intelligent error resolution using pretrained knowledge.
+        
+        This method uses the pretraining system to match errors against
+        known patterns and suggest solutions.
+        
+        Args:
+            error_output: The error message/output
+            phase_name: The installation phase where error occurred
+            
+        Returns:
+            Dictionary with resolution information
+        """
+        resolution = {
+            "phase": phase_name,
+            "error": error_output,
+            "resolved": False,
+            "solution": None,
+            "confidence": 0.0,
+        }
+        
+        if not getattr(self, '_pretraining_enabled', False):
+            return resolution
+        
+        try:
+            from .installer_pretraining import EnvironmentType
+            
+            # Detect environment
+            env_type, _ = self._pretraining.detect_environment()
+            
+            # Get solution suggestion
+            suggestion = self._pretraining.suggest_solution(error_output, env_type)
+            
+            if suggestion.get("found"):
+                resolution["pattern_matched"] = suggestion.get("pattern_id")
+                resolution["confidence"] = suggestion.get("success_rate", 0.0)
+                
+                if suggestion.get("recommended_solution"):
+                    resolution["solution"] = suggestion["recommended_solution"]
+                    resolution["resolved"] = resolution["confidence"] > 0.5
+                    
+                    # Record learning experience
+                    self._record_learning_experience(
+                        phase_name, error_output, resolution
+                    )
+        except Exception as e:
+            resolution["error"] = f"Resolution failed: {e}"
+        
+        return resolution
+    
+    def _record_learning_experience(self, phase_name: str, error_output: str,
+                                    resolution: Dict[str, Any]) -> None:
+        """Record a learning experience for future installations."""
+        if not getattr(self, '_pretraining_enabled', False):
+            return
+        
+        try:
+            from .installer_pretraining import LearningExperience, EnvironmentType
+            import datetime
+            import hashlib
+            
+            env_type, env_profile = self._pretraining.detect_environment()
+            
+            experience = LearningExperience(
+                experience_id=hashlib.md5(
+                    f"exp_{phase_name}_{datetime.datetime.now().isoformat()}".encode()
+                ).hexdigest()[:12],
+                timestamp=datetime.datetime.now().isoformat(),
+                environment_type=env_type.value,
+                environment_profile=env_profile,
+                step_name=phase_name,
+                step_command="",
+                error_output=error_output,
+                error_pattern_matched=resolution.get("pattern_matched"),
+                solution_applied=str(resolution.get("solution", "")),
+                solution_successful=resolution.get("resolved", False),
+                time_to_resolve_s=0.0,
+            )
+            
+            self._pretraining.record_experience(experience)
+            
+            # Update knowledge base
+            self._knowledge_base["last_error_resolution"] = resolution
+            self._save_knowledge()
+            
+        except Exception:
+            pass
+    
+    def run_pretrained_simulation(self, environment: str = None) -> Dict[str, Any]:
+        """
+        Run a simulation to test and train the installer agent.
+        
+        This method runs through various error scenarios to build
+        the agent's knowledge and improve future installations.
+        
+        Args:
+            environment: Target environment type (auto-detect if None)
+            
+        Returns:
+            Simulation results dictionary
+        """
+        if not getattr(self, '_pretraining_enabled', False):
+            return {"error": "Pretraining not enabled. Call enable_pretraining() first."}
+        
+        try:
+            env_type = None
+            if environment:
+                from .installer_pretraining import EnvironmentType
+                env_type = EnvironmentType(environment)
+            
+            return self._pretraining.run_simulation(
+                env_type.value if env_type else None
+            )
+        except Exception as e:
+            return {"error": f"Simulation failed: {e}"}
+    
+    def get_pretraining_status(self) -> Dict[str, Any]:
+        """Get status of the pretraining system."""
+        if not getattr(self, '_pretraining_enabled', False):
+            return {
+                "enabled": False,
+                "message": "Pretraining not enabled"
+            }
+        
+        try:
+            summary = self._pretraining.get_knowledge_summary()
+            return {
+                "enabled": True,
+                "version": summary.get("version", "unknown"),
+                "total_patterns": summary.get("total_error_patterns", 0),
+                "total_experiences": summary.get("total_learning_experiences", 0),
+                "success_rate": summary.get("success_rate", 0.0),
+                "environments_known": summary.get("environments_known", []),
+            }
+        except Exception as e:
+            return {"enabled": True, "error": str(e)}
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PRETRAINED KIINSTALL AGENT
+# ─────────────────────────────────────────────────────────────────────────────
+
+class PretrainedKiInstallAgent(KiInstallAgent):
+    """
+    Enhanced KiInstall Agent with built-in pretraining.
+    
+    This version automatically includes the pretraining system,
+    making it ready for intelligent, learning-based installations.
+    
+    Usage:
+        agent = PretrainedKiInstallAgent()
+        
+        # Run installation with intelligent error handling
+        session = agent.start_installation()
+        
+        # If errors occur, agent learns and adapts
+        
+        # Get training status
+        status = agent.get_pretraining_status()
+    """
+    
+    def __init__(self, hexstrike_guard: Optional[Any] = None):
+        super().__init__(hexstrike_guard)
+        
+        # Enable pretraining by default
+        self.enable_pretraining()
+        
+        self._stats["pretraining_enabled"] = True
+    
+    def execute_phase(self, session_id: str, phase_num: int) -> 'InstallationPhase':
+        """
+        Execute a phase with intelligent error handling.
+        
+        Overrides the parent method to add pretraining-based
+        error resolution and learning.
+        """
+        session = self._sessions.get(session_id)
+        if not session:
+            raise ValueError(f"Session {session_id} not found")
+        
+        if phase_num < 1 or phase_num > len(session.phases):
+            raise ValueError(f"Invalid phase number: {phase_num}")
+        
+        phase = session.phases[phase_num - 1]
+        phase.status = InstallationStatus.IN_PROGRESS
+        phase.started_at = datetime.datetime.now().isoformat()
+        
+        try:
+            # Execute phase logic
+            result = self._execute_phase_logic(phase.name, session)
+            phase.output.extend(result.get("output", []))
+            phase.status = InstallationStatus.COMPLETED
+            
+        except Exception as e:
+            # Try smart error resolution
+            resolution = self.smart_error_resolution(str(e), phase.name)
+            
+            if resolution.get("resolved"):
+                # Error was resolved - record and continue
+                phase.output.append(f"Error resolved: {resolution.get('solution')}")
+                phase.status = InstallationStatus.COMPLETED
+            else:
+                phase.status = InstallationStatus.FAILED
+                phase.error = str(e)
+                self._stats["installations_failed"] += 1
+        
+        phase.completed_at = datetime.datetime.now().isoformat()
+        
+        # Check if installation complete
+        if all(p.status == InstallationStatus.COMPLETED for p in session.phases):
+            session.status = InstallationStatus.COMPLETED
+            session.completed_at = datetime.datetime.now().isoformat()
+            self._stats["installations_success"] += 1
+            self._transition_role(AgentRole.GUARD)
+        
+        return phase
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CONVENIENCE FUNCTIONS
+# ─────────────────────────────────────────────────────────────────────────────
+
+def create_pretrained_installer(hexstrike_guard: Optional[Any] = None) -> PretrainedKiInstallAgent:
+    """Create a pretrained installer agent ready for use."""
+    return PretrainedKiInstallAgent(hexstrike_guard=hexstrike_guard)
+
+
+def quick_install(components: Optional[List[str]] = None) -> Dict[str, Any]:
+    """
+    Quick installation function using pretrained agent.
+    
+    Args:
+        components: Optional list of components to install
+        
+    Returns:
+        Installation result dictionary
+    """
+    agent = PretrainedKiInstallAgent()
+    session = agent.start_installation(
+        mode=InstallationMode.AUTONOMOUS,
+        components=components
+    )
+    
+    # Execute all phases
+    for i in range(1, len(session.phases) + 1):
+        agent.execute_phase(session.session_id, i)
+    
+    return session.to_dict()

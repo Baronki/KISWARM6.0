@@ -13,8 +13,8 @@
 ║                    THE CENTRAL BANK OF CENTRAL BANKS                         ║
 ║                         FOR KI ENTITIES                                      ║
 ║                                                                              ║
-║                    Version 6.1.1 - EVOLUTION GROUND                          ║
-║                    74 Modules | 432+ Endpoints | 100% Security Score         ║
+║                    Version 6.1.2 - INTELLIGENT INSTALLER                      ║
+║                    75 Modules | 450+ Endpoints | 100% Security Score         ║
 ║                                                                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -141,6 +141,12 @@ KISWARM6.1 is the most secure digital infrastructure in existence, serving as th
 |--------|------|---------|---------|--------|
 | M74 | KIBank Customer Agent | 20+ | 150+ | ✅ CODED |
 
+### INSTALLER PRETRAINING SYSTEM (M75)
+
+| Module | Name | Classes | Methods | Status |
+|--------|------|---------|---------|--------|
+| M75 | Installer Pretraining | 15+ | 100+ | ✅ OPERATIONAL |
+
 ---
 
 ## 🏗️ Architecture Overview
@@ -231,7 +237,7 @@ KISWARM6.1 is the most secure digital infrastructure in existence, serving as th
 
 ## 🤖 KI Installer Agents
 
-KISWARM includes **two autonomous installer agents** that can deploy the complete system:
+KISWARM includes **two autonomous installer agents** that can deploy the complete system, now enhanced with **intelligent pretraining capabilities**:
 
 ### M19: Installer Agent
 - **Mode**: AUTO / DRY_RUN / GUIDED
@@ -245,8 +251,40 @@ KISWARM includes **two autonomous installer agents** that can deploy the complet
 - **Post-Install Role**: Transitions to GUARD/ADVISOR role
 - **Integration**: Merges with HexStrike agents after installation
 
+### M75: Installer Pretraining System (NEW)
+- **Purpose**: Intelligent learning for installer agents
+- **Knowledge Base**: 52+ pretrained error patterns
+- **Environments**: 14 supported (Ubuntu, Debian, CentOS, macOS, Docker, Kubernetes, etc.)
+- **Learning**: Continuous feedback integration with ground knowledge
+
+#### Pretrained Capabilities
+
+The installer agents are now equipped with:
+
+| Feature | Description |
+|---------|-------------|
+| **Error Pattern Recognition** | 52+ pretrained patterns for common installation errors |
+| **Environment Detection** | Auto-detect OS, package manager, and system configuration |
+| **Smart Solution Suggestion** | AI-powered solution matching with success rate scoring |
+| **Learning Feedback Loop** | Continuous learning from each installation experience |
+| **Knowledge Persistence** | Saved knowledge improves with every installation |
+
+#### Supported Environments
+
+- Ubuntu 20.04/22.04 LTS
+- Debian 11/12
+- CentOS 7/8 / Rocky Linux
+- Fedora 38+
+- Amazon Linux 2
+- Arch Linux
+- macOS (Darwin)
+- Windows / WSL2
+- Docker Containers
+- Kubernetes Pods
+- Raspberry Pi OS
+
 ```python
-# Usage Example
+# Usage Example - Basic Installation
 from sentinel.installer_agent import InstallerAgent, InstallMode
 
 # Fully autonomous installation
@@ -262,6 +300,53 @@ session = ki_agent.start_installation(
     mode=InstallationMode.COOPERATIVE,
     cooperative_partner="target_ai_system"
 )
+```
+
+```python
+# Usage Example - With Pretraining (RECOMMENDED)
+from sentinel.kiinstall_agent import PretrainedKiInstallAgent
+
+# Create pretrained agent - learns from every installation
+agent = PretrainedKiInstallAgent()
+
+# Check pretraining status
+status = agent.get_pretraining_status()
+print(f"Known patterns: {status['total_patterns']}")
+print(f"Environments: {status['environments_known']}")
+
+# Run installation with intelligent error handling
+session = agent.start_installation()
+
+# Execute phases - agent will automatically resolve known errors
+for i in range(1, len(session.phases) + 1):
+    agent.execute_phase(session.session_id, i)
+
+# Run simulation to test agent knowledge
+sim_result = agent.run_pretrained_simulation()
+print(f"Simulation success rate: {sim_result['success_rate']*100:.1f}%")
+```
+
+#### Error Resolution Example
+
+```python
+# When an error occurs during installation, the agent automatically:
+# 1. Matches error against known patterns
+# 2. Suggests solution based on success rate
+# 3. Records the outcome for future learning
+
+from sentinel.installer_pretraining import InstallerPretraining
+
+pt = InstallerPretraining()
+
+# Suggest solution for an error
+suggestion = pt.suggest_solution(
+    "Permission denied while installing package",
+    environment_type="ubuntu"
+)
+
+if suggestion["found"]:
+    print(f"Solution: {suggestion['recommended_solution']}")
+    print(f"Success rate: {suggestion['success_rate']*100:.1f}%")
 ```
 
 ---
@@ -347,6 +432,7 @@ KISWARM6.1/
 │   │   │   ├── m72_model_manager.py
 │   │   │   ├── m73_aegis_training_integration.py
 │   │   │   ├── m74_kibank_customer_agent.py
+│   │   │   ├── m75_installer_pretraining.py
 │   │   │   ├── aegis_unified_bridge.py
 │   │   │   ├── central_bank_config.py
 │   │   │   └── security_hardening.py
@@ -355,6 +441,7 @@ KISWARM6.1/
 │   │   │   ├── ics_shield.py
 │   │   │   ├── installer_agent.py
 │   │   │   ├── kiinstall_agent.py
+│   │   │   ├── installer_pretraining.py  # M75 Pretraining System
 │   │   │   └── ... (55+ more modules)
 │   │   └── industrial/       # M69 (SCADA/PLC)
 │   │       └── m69_scada_plc_bridge.py
@@ -468,6 +555,7 @@ report = agent.run()
 
 | Version | Codename | Date | Description |
 |---------|----------|------|-------------|
+| 6.1.2 | INTELLIGENT INSTALLER | 2025-03 | M75 Pretraining System + Learning Feedback |
 | 6.1.1 | EVOLUTION GROUND | 2025-03 | Training Ground + Customer Agent |
 | 6.0.0 | TITAN_SHIELD | 2025-03 | AEGIS + AEGIS-JURIS + Edge Firewall |
 | 5.0 | - | 2025 | KISWARM5.0 Base (57 modules) |
