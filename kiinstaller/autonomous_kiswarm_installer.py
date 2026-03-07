@@ -41,6 +41,21 @@ KISWARM_KNOWLEDGE = {
     "modules": 75,
     "endpoints": 450,
     
+    # MASTER KISWARM CONFIGURATION
+    "master_api": {
+        "url": "http://21.0.6.96:5002",
+        "host": "21.0.6.96",
+        "port": 5002,
+    },
+    
+    # Z.ai INTELLIGENCE LAYER (Development Mode)
+    "zai_intelligence": {
+        "enabled": True,
+        "role": "development_master",
+        "report_progress": True,
+        "capture_lessons": True,
+    },
+    
     "github_repos": {
         "main": "https://github.com/Baronki/KISWARM6.0",
         "agents": "https://github.com/Baronki/KISWARMAGENTS1.0",
