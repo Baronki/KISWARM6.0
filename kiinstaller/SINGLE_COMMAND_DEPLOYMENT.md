@@ -1,5 +1,30 @@
 # KISWARM AUTONOMOUS INSTALLER - SINGLE COMMAND DEPLOYMENT
 
+## ⚠️ DEVELOPMENT ARCHITECTURE
+
+During development phase, the architecture is:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         KISWARM HOME SYSTEM                                 │
+│  ┌─────────────────────┐         ┌─────────────────────┐                   │
+│  │  Master KISWARM API │ ◄─────► │ Z.ai (GLM5)         │                   │
+│  │  21.0.6.96:5002     │         │ Master Intelligence │                   │
+│  │  (Message Broker)   │         │ (Receives ALL       │                   │
+│  └─────────────────────┘         │  progress/knowledge)│                   │
+│                                  └─────────────────────┘                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                    │
+                    │ Mesh Protocol
+                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  TARGET ENVIRONMENT (Colab/Cloud/Edge)                                      │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │  KISWARM Installer → Reports progress → Master API → Z.ai          │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
 ## 🚀 COPY-PASTE THIS INTO GEMINI CLI / COLAB
 
 ```
@@ -16,10 +41,11 @@ EXECUTE THIS COMPLETE DEPLOYMENT:
 # 2. Install minimal dependencies
 !pip install -q flask flask-cors structlog requests pyngrok
 
-# 3. Run Autonomous Deployment (replace MASTER_URL with your Master KISWARM URL)
+# 3. Run Autonomous Deployment
+# Master API: http://21.0.6.96:5002 (Z.ai acts as Master Intelligence)
 from autonomous_kiswarm_installer import autonomous_deploy
 result = autonomous_deploy(
-    master_url="https://your-master-kiswarm.ngrok.io",  # Replace with actual Master URL
+    master_url="http://21.0.6.96:5002",  # Master KISWARM API
     entity_id="",  # Auto-generated if empty
     environment="auto"
 )
