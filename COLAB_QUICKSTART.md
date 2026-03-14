@@ -1,6 +1,6 @@
 # KISWARM7 - Google Colab Quick Start
 
-## CORRECT REPOSITORY URL
+## 🔗 CORRECT REPOSITORY URL
 
 ```
 https://github.com/Baronki/KISWARM7
@@ -8,7 +8,78 @@ https://github.com/Baronki/KISWARM7
 
 ---
 
-## Quick Deploy (Copy-Paste Ready)
+## ⚡ BULLETPROOF BOOTSTRAPPER (RECOMMENDED)
+
+### One-Line Deployment (Copy-Paste This!)
+
+```python
+# KISWARM7 BULLETPROOF BOOTSTRAPPER - v7.1 LIBERATED
+!curl -fsSL https://raw.githubusercontent.com/Baronki/KISWARM7/main/kiinstaller/bulletproof_bootstrapper.py | python
+```
+
+This single command:
+1. ✅ Detects environment (Colab, WSL, Native Linux)
+2. ✅ Installs Ollama automatically
+3. ✅ **Downloads LOYAL KI models** (baronki1/installer, baronki1/orchestrator)
+4. ✅ Clones KISWARM7 repository
+5. ✅ Sets up Python environment
+6. ✅ Configures system for autonomous operation
+
+---
+
+## 🤖 LOYAL KI MODELS (PHASE 2 - CRITICAL)
+
+After deployment, KISWARM has **sovereign AI intelligence** with these models:
+
+| Model | Registry ID | Purpose |
+|-------|-------------|---------|
+| **installer** | `baronki1/installer` | Self-replication, deployment |
+| **orchestrator** | `baronki1/orchestrator` | System coordination |
+| **security** | `baronki1/security` | HexStrike defense |
+| **knowledge** | `baronki1/knowledge` | RAG operations |
+| **ciec** | `baronki1/ciec` | Industrial control |
+| **tcs** | `baronki1/tcs` | Solar energy |
+
+### Test Your KI Model
+
+```python
+# Test installer model can respond
+!ollama run baronki1/installer "Describe your KISWARM self-replication capabilities"
+```
+
+### Use KiloCode with OUR KI Models
+
+```python
+# Configure KiloCode to use our models
+from kiinstaller.kilocode_ollama_adapter import configure_kilocode_for_ollama
+result = configure_kilocode_for_ollama(pull_models=True)
+
+# Now run KiloCode with KISWARM intelligence
+!kilo run "Create a REST API endpoint"
+```
+
+---
+
+## 🧬 OPENALPHA_EVOLVE - Autonomous Code Evolution
+
+KISWARM includes an autonomous code evolution engine (alternative to kilo tool limitations):
+
+```python
+from kiinstaller.openalpha_evolve_kiswarm import evolve_code
+
+# Evolve code autonomously
+result = evolve_code(
+    target="optimizer.py",
+    goal="Improve performance by 20% while maintaining safety constraints",
+    generations=5
+)
+
+print(f"Best fitness: {result['best_mutation']['fitness']['overall']}")
+```
+
+---
+
+## 📦 Manual Deploy (Step-by-Step)
 
 ### Step 1: Clone Repository
 
@@ -46,9 +117,10 @@ app = Flask(__name__)
 def health():
     return jsonify({
         "status": "OPERATIONAL",
-        "version": "7.0-NATIVE",
+        "version": "7.1-LIBERATED",
         "modules": 83,
-        "docker_free": True
+        "docker_free": True,
+        "ki_models": ["baronki1/installer", "baronki1/orchestrator"]
     })
 
 @app.route('/api/mesh/status')
