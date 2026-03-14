@@ -4,6 +4,20 @@
 
 ---
 
+## 🔗 REPOSITORY URL
+
+```
+https://github.com/Baronki/KISWARM7.0-NATIVE
+```
+
+**For Google Colab:**
+```python
+!git clone https://github.com/Baronki/KISWARM7.0-NATIVE.git
+%cd KISWARM7.0-NATIVE
+```
+
+---
+
 ## Overview
 
 The KISWARM v7.0 Native Installer is a fully autonomous deployment system that installs KISWARM without Docker. It incorporates all lessons learned from the KiloCode field test and is designed for:

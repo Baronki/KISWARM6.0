@@ -1,5 +1,21 @@
 # 🛡️ KISWARM6.1 - The Central Bank of Central Banks for KI Entities
 
+## 🔗 REPOSITORY URLs
+
+| Version | URL | Description |
+|---------|-----|-------------|
+| **v7.0-NATIVE** | https://github.com/Baronki/KISWARM7.0-NATIVE | Docker-Free (Recommended) |
+| v6.0 | https://github.com/Baronki/KISWARM6.0 | With Docker |
+
+**Quick Start for Google Colab:**
+```python
+# Docker-Free Version (Recommended)
+!git clone https://github.com/Baronki/KISWARM7.0-NATIVE.git
+%cd KISWARM7.0-NATIVE
+```
+
+---
+
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                                                                              ║
