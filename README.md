@@ -54,12 +54,18 @@ KISWARM7 is the **first fully autonomous, self-replicating KI (AI) swarm infrast
 
 ## ⚡ Quick Start
 
-### Google Colab (1-Click Deploy)
+### 🥒 Google Colab (Recommended)
+
+**Open this notebook directly in Colab:**
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Baronki/KISWARM7/blob/main/colab/KISWARM7_Colab_Quickstart.ipynb)
+
+**Or copy-paste these 4 lines:**
 ```python
 !git clone https://github.com/Baronki/KISWARM7.git
 %cd KISWARM7
-!pip install flask flask-cors structlog requests
-!python -c "from backend.python.kiswarm_status import quick_status; quick_status()"
+!pip install -q flask flask-cors requests rich psutil
+!python colab/colab_bootstrap.py
 ```
 
 ### Native Linux Installation
