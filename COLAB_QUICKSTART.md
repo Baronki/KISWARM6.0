@@ -1,9 +1,9 @@
-# KISWARM7.0-NATIVE - Google Colab Quick Start
+# KISWARM7 - Google Colab Quick Start
 
 ## CORRECT REPOSITORY URL
 
 ```
-https://github.com/Baronki/KISWARM7.0-NATIVE
+https://github.com/Baronki/KISWARM7
 ```
 
 ---
@@ -13,9 +13,9 @@ https://github.com/Baronki/KISWARM7.0-NATIVE
 ### Step 1: Clone Repository
 
 ```python
-# KISWARM7.0-NATIVE - DOCKER-FREE VERSION
-!git clone https://github.com/Baronki/KISWARM7.0-NATIVE.git
-%cd KISWARM7.0-NATIVE
+# KISWARM7 - DOCKER-FREE VERSION
+!git clone https://github.com/Baronki/KISWARM7.git
+%cd KISWARM7
 ```
 
 ### Step 2: Install Dependencies
@@ -28,15 +28,15 @@ https://github.com/Baronki/KISWARM7.0-NATIVE
 
 ```python
 import os
-os.environ['PYTHONPATH'] = '/content/KISWARM7.0-NATIVE/backend:/content/KISWARM7.0-NATIVE/backend/python'
+os.environ['PYTHONPATH'] = '/content/KISWARM7/backend:/content/KISWARM7/backend/python'
 ```
 
 ### Step 4: Run KISWARM
 
 ```python
 import sys
-sys.path.insert(0, '/content/KISWARM7.0-NATIVE/backend')
-sys.path.insert(0, '/content/KISWARM7.0-NATIVE/backend/python')
+sys.path.insert(0, '/content/KISWARM7/backend')
+sys.path.insert(0, '/content/KISWARM7/backend/python')
 
 # Start minimal API
 from flask import Flask, jsonify
@@ -95,7 +95,7 @@ print(result.stderr)
 
 | Repository | URL |
 |------------|-----|
-| **KISWARM7.0-NATIVE** | https://github.com/Baronki/KISWARM7.0-NATIVE |
+| **KISWARM7** | https://github.com/Baronki/KISWARM7 |
 | KISWARM6.0 | https://github.com/Baronki/KISWARM6.0 |
 | KISWARMAGENTS1.0 | https://github.com/Baronki/KISWARMAGENTS1.0 |
 | Ollama Models | https://ollama.com/baronki1 |

@@ -7,13 +7,13 @@
 ## 🔗 REPOSITORY URL
 
 ```
-https://github.com/Baronki/KISWARM7.0-NATIVE
+https://github.com/Baronki/KISWARM7
 ```
 
 **For Google Colab:**
 ```python
-!git clone https://github.com/Baronki/KISWARM7.0-NATIVE.git
-%cd KISWARM7.0-NATIVE
+!git clone https://github.com/Baronki/KISWARM7.git
+%cd KISWARM7
 ```
 
 ---
@@ -192,7 +192,7 @@ Redundancy layer for failover.
 
 | Repository | Purpose |
 |------------|---------|
-| https://github.com/Baronki/KISWARM7.0-NATIVE | Main v7.0 repository |
+| https://github.com/Baronki/KISWARM7 | Main v7.0 repository |
 | https://github.com/Baronki/KISWARM6.0 | Legacy system |
 | https://github.com/Baronki/KISWARMAGENTS1.0 | Model definitions |
 | https://ollama.com/baronki1 | Model registry |

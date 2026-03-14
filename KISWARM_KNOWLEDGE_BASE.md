@@ -32,7 +32,7 @@ ollama pull baronki1/installer      # Autonomous deployment, error recovery
 | Repository | Purpose |
 |------------|---------|
 | https://github.com/Baronki/KISWARM6.0 | Main system (current) |
-| https://github.com/Baronki/KISWARM7.0-NATIVE | Native installation (NEW - to be created) |
+| https://github.com/Baronki/KISWARM7 | Native installation (NEW - to be created) |
 | https://github.com/Baronki/KISWARMAGENTS1.0 | 27 KI Agent models + Modelfiles |
 | https://github.com/Baronki/kinfp-portal | Frontend (React/Next.js) |
 | https://github.com/Baronki2/KISWARM5.0 | Original backend (57 modules) |
@@ -67,9 +67,9 @@ ollama pull baronki1/installer      # Autonomous deployment, error recovery
 - This is the foundation for autonomous AI deployment
 - Must include: Ollama installation + Basic models + Full system setup
 
-### 2.2 NO DOCKER for KISWARM7.0-NATIVE
+### 2.2 NO DOCKER for KISWARM7
 - User explicitly dislikes Docker due to persistent problems
-- KISWARM7.0-NATIVE must be bare-metal installation
+- KISWARM7 must be bare-metal installation
 - Zero containerization - direct OS installation
 
 ### 2.3 GPU Strategy
@@ -188,12 +188,12 @@ def select_models(gpu_vram_gb, cpu_cores, ram_gb):
 - Update kiinstaller with self-healing capabilities
 - Push to GitHub
 
-### Task 2: Create KISWARM7.0-NATIVE
+### Task 2: Create KISWARM7
 - Clean repository with ZERO Docker
 - Include ALL modules from KISWARM6.0
 - Native installation scripts
 - Complete documentation
-- Push to https://github.com/Baronki/KISWARM7.0-NATIVE
+- Push to https://github.com/Baronki/KISWARM7
 
 ---
 
