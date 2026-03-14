@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 #
-# KISWARM6.0 Installation Script
-# ==============================
-# This script sets up the complete KISWARM6.0 environment including:
+# KISWARM7 Installation Script
+# ============================
+# This script sets up the complete KISWARM7 environment including:
 # - Python dependencies (Backend)
 # - Node.js dependencies (Frontend & Bridge)
 # - Environment configuration
 # - Database initialization
 #
 # Author: Baron Marco Paolo Ialongo
-# Version: 6.0.0
+# Version: 7.0
+# Repository: https://github.com/Baronki/KISWARM7
 #
 
 set -e
@@ -35,11 +36,11 @@ DATA_DIR="${PROJECT_ROOT}/data"
 print_logo() {
     echo -e "${CYAN}"
     echo "╔═══════════════════════════════════════════════════════════════╗"
-    echo "║              KISWARM6.0 INSTALLATION SCRIPT                   ║"
+    echo "║               KISWARM7 INSTALLATION SCRIPT                    ║"
     echo "╠═══════════════════════════════════════════════════════════════╣"
-    echo "║  Version: 6.0.0                                               ║"
-    echo "║  Modules: 60 (57 KISWARM5.0 + 3 KIBank)                      ║"
-    echo "║  Endpoints: 384                                               ║"
+    echo "║  Version: 7.0                                                 ║"
+    echo "║  Modules: 83 | KI Agents: 27 | Docker-Free                   ║"
+    echo "║  Repository: https://github.com/Baronki/KISWARM7             ║"
     echo "╚═══════════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
 }
@@ -257,8 +258,8 @@ setup_environment() {
     
     # Create environment file
     cat > "${ENV_FILE}" << EOF
-# KISWARM6.0 Environment Configuration
-# =====================================
+# KISWARM7 Environment Configuration
+# ===================================
 # Generated on $(date)
 
 # ==================== Application ====================
@@ -266,14 +267,14 @@ NODE_ENV=development
 VITE_APP_ID=kiswarm6
 
 # ==================== Database ====================
-DATABASE_URL=mysql://kiswarm:kiswarm_password@localhost:3306/kiswarm6
+DATABASE_URL=mysql://kiswarm:kiswarm_password@localhost:3306/kiswarm7
 
 # ==================== Authentication ====================
 JWT_SECRET=${JWT_SECRET}
 KIBANK_SECRET_KEY=${KIBANK_SECRET}
 
 # ==================== API URLs ====================
-VITE_KISWARM_API_URL=http://localhost:5001
+VITE_KISWARM_API_URL=http://localhost:5002
 VITE_TRPC_BRIDGE_URL=http://localhost:3000
 
 # ==================== OAuth (Optional) ====================
@@ -289,7 +290,7 @@ QDRANT_URL=http://localhost:6333
 QDRANT_API_KEY=
 
 # ==================== Ports ====================
-BACKEND_PORT=5001
+BACKEND_PORT=5002
 FRONTEND_PORT=5173
 BRIDGE_PORT=3000
 
@@ -324,9 +325,9 @@ initialize_database() {
             print_info "Please ensure MySQL is running and the database user has permissions"
             print_info "You may need to run the following SQL commands:"
             echo ""
-            echo "  CREATE DATABASE IF NOT EXISTS kiswarm6;"
+            echo "  CREATE DATABASE IF NOT EXISTS kiswarm7;"
             echo "  CREATE USER IF NOT EXISTS 'kiswarm'@'localhost' IDENTIFIED BY 'kiswarm_password';"
-            echo "  GRANT ALL PRIVILEGES ON kiswarm6.* TO 'kiswarm'@'localhost';"
+            echo "  GRANT ALL PRIVILEGES ON kiswarm7.* TO 'kiswarm'@'localhost';"
             echo "  FLUSH PRIVILEGES;"
             echo ""
         fi
@@ -354,7 +355,7 @@ create_systemd_services() {
     # Backend service
     cat > "${SYSTEMD_DIR}/kiswarm-backend.service" << EOF
 [Unit]
-Description=KISWARM6.0 Backend Service
+Description=KISWARM7 Backend Service
 After=network.target mysql.service
 
 [Service]
@@ -373,7 +374,7 @@ EOF
     # Frontend service
     cat > "${SYSTEMD_DIR}/kiswarm-frontend.service" << EOF
 [Unit]
-Description=KISWARM6.0 Frontend Service
+Description=KISWARM7 Frontend Service
 After=network.target
 
 [Service]
@@ -391,7 +392,7 @@ EOF
     # Bridge service
     cat > "${SYSTEMD_DIR}/kiswarm-bridge.service" << EOF
 [Unit]
-Description=KISWARM6.0 tRPC Bridge Service
+Description=KISWARM7 tRPC Bridge Service
 After=network.target
 
 [Service]
@@ -419,7 +420,7 @@ print_summary() {
     
     echo -e "${GREEN}"
     echo "╔═══════════════════════════════════════════════════════════════╗"
-    echo "║           KISWARM6.0 INSTALLATION SUCCESSFUL                  ║"
+    echo "║             KISWARM7 INSTALLATION SUCCESSFUL                  ║"
     echo "╠═══════════════════════════════════════════════════════════════╣"
     echo "║                                                               ║"
     echo "║  Next Steps:                                                  ║"
@@ -428,7 +429,7 @@ print_summary() {
     echo "║  3. Run: ./scripts/start.sh to start all services            ║"
     echo "║                                                               ║"
     echo "║  Services:                                                    ║"
-    echo "║    Backend:  http://localhost:5001                           ║"
+    echo "║    Backend:  http://localhost:5002                           ║"
     echo "║    Frontend: http://localhost:5173                           ║"
     echo "║    Bridge:   http://localhost:3000                           ║"
     echo "║                                                               ║"
